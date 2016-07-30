@@ -171,7 +171,7 @@ void process_file(struct png_file *i, struct png_file *s)
     if(i->height != s->height || i->width != s->width)
         abort_("not matching dimensions input!\n");
     
-    int x, y;
+    int x, y, k;
     for (y=0; y<i->height; y++) {
         png_byte* row = i->row_pointers[y];
         png_byte* srow = s->row_pointers[y];
@@ -181,7 +181,7 @@ void process_file(struct png_file *i, struct png_file *s)
 //            printf("Pixel at position [ %d - %d ] has RGBA values: %d - %d - %d - %d\n",
 //                   x, y, ptr[0], ptr[1], ptr[2], ptr[3]);
 
-            for(int k=0; k<3; k++)
+            for(k=0; k<3; k++)
 //                ptr[k] = ptr[k]+sptr[k]*ptr[k]/255;
 //                ptr[k] = ptr[k]+sptr[k];
                 ptr[k] = ptr[k]+sptr[k]/2+sptr[k]*ptr[k]/510;

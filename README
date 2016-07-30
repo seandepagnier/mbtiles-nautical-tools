@@ -3,29 +3,29 @@ mbtiles for nautical charting purposes
 
 ==== Requirements ====
 convert from imagemagick
-mb-util from https://github.com/mapbox/mbutil.git
 libpng-dev
 mapproxy
 
 ==== Building ====
+$ git clone https://github.com/mapbox/mbutil.git
+$ cd mbutil
+$ sudo python setup.py install
+$ cd ..   
 $ git clone https://github.com/seandepagnier/landez.git
 $ sudo easy_install landez
 
 $ make
-
-install
 $ sudo make install
 
 ==== Example ====
 
 Edit mbtiles-nautical-boxes/config.yaml to select a tile server
 
-$ mapproxy-seed -s mbtiles-nautical-boxes/nautical-17.yaml -f mbtiles-nautical-boxes/config.yaml
+$ mapproxy-seed -s nautical-17.yaml -f config.yaml
 
 This program is a little buggy as it sometimes aborts, but
 also tends to "complete" without completing the database.
-I have to run it again as many times as needed until it
-completes with 0 tiles fetched.
+Run it as many times as needed until it completes with 0 tiles fetched.
 
 $ cp mbtiles-nautical-boxes/cache_data/mapproxy-seed-output.mbtiles nautical-17.mbtiles
 
@@ -36,16 +36,13 @@ You can use the scripts to filter, recolor etc
 This example makes compression much less for nautical charts:
 
 $ wget -c https://s31.postimg.org/4p270ov7f/subneg.png
-$ ./mbtilessub.sh nautical-17.mbtiles nautical-17-sub.mbtiles subneg.png
+$ mbtilessub.sh nautical-17.mbtiles nautical-17-sub.mbtiles subneg.png
 
-3) Convert from to wmts coordinates
-$ ./mbtilesflip.sh nautical-17-sub.mbtiles nautical-17-wmts.mbtiles
-
-4) Convert to kap
+3) Convert to kap
 $ mkdir kap
 $ cd kap
 
-../mbtiles2kaps.py ~/mbtiles/nautical-sub.mbtiles ../mbtiles-nautical-boxes/boxes/nautical-17 
+mbtiles2kaps.py ../nautical-17.mbtiles ../mbtiles-nautical-boxes/boxes/nautical-17 
 
 ==== Tools ====
 

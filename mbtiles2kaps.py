@@ -13,7 +13,7 @@ from math import ceil
 args = list(sys.argv)
 del args[0]
 
-colors = 16
+colors = 127
 if len(args) > 0 and args[0] == "-colors":
    colors = int(args[1])
    del args[0]
