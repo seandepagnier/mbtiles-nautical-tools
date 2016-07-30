@@ -1,0 +1,84 @@
+This collection of scripts and programs is intended to be used to facilitate
+mbtiles for nautical charting purposes
+
+==== Requirements ====
+convert from imagemagick
+mb-util from https://github.com/mapbox/mbutil.git
+libpng-dev
+mapproxy
+
+==== Building ====
+$ git clone https://github.com/seandepagnier/landez.git
+$ sudo easy_install landez
+
+$ make
+
+install
+$ sudo make install
+
+==== Example ====
+
+Edit mbtiles-nautical-boxes/config.yaml to select a tile server
+
+$ mapproxy-seed -s mbtiles-nautical-boxes/nautical-17.yaml -f mbtiles-nautical-boxes/config.yaml
+
+This program is a little buggy as it sometimes aborts, but
+also tends to "complete" without completing the database.
+I have to run it again as many times as needed until it
+completes with 0 tiles fetched.
+
+$ cp mbtiles-nautical-boxes/cache_data/mapproxy-seed-output.mbtiles nautical-17.mbtiles
+
+You now have mbtiles in tms format.
+
+2) Filter Tiles (Optional)
+You can use the scripts to filter, recolor etc
+This example makes compression much less for nautical charts:
+
+$ wget -c https://s31.postimg.org/4p270ov7f/subneg.png
+$ ./mbtilessub.sh nautical-17.mbtiles nautical-17-sub.mbtiles subneg.png
+
+3) Convert from to wmts coordinates
+$ ./mbtilesflip.sh nautical-17-sub.mbtiles nautical-17-wmts.mbtiles
+
+4) Convert to kap
+$ mkdir kap
+$ cd kap
+
+../mbtiles2kaps.py ~/mbtiles/nautical-sub.mbtiles ../mbtiles-nautical-boxes/boxes/nautical-17 
+
+==== Tools ====
+
+mbtiles2kaps.py:
+    generates kaps from a given mbtiles database
+
+kap2mbtiles.py:
+    convert a single kap file to mbtiles database
+
+mbtilesflip.sh:
+    Simply flips y values in mbtiles, so converts from tms to wmts
+    This is useful if the mbfiles is obtained in tms but wmts is needed
+    by mbtiles2kaps.py
+
+mbtilessub.sh:
+    can remove identical features present in every tile of an mbtiles
+    This is useful to reduce the size of the resulting mbtiles
+    as it will compress beter without this feature, relies on subpng.c
+    and needs a mask tile (typically inverted white tile containing the feature)
+
+mbtilesrecolor.sh:
+    Apply a color matrix to every tile in mbtiles
+    This can apply "color schemes" such as day/dusk/night to charts
+
+mbtilesreduce.sh:
+    tiles to 8bit png reducing the size of mbtiles to a given number of colors
+
+mbtiles2kap.sh:  (obsolete not recommended)
+    script that converts from mbtiles to single kap
+    it makes various assumptions and will fail on mbtiles that do not form a complete
+    rectangle at a specific zoom level
+
+
+Note: the shell scripts create a working directory "output" which may
+      be left behind in the event of a failure
+      you may not run two tools in the same working directory
