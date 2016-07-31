@@ -3,7 +3,7 @@ mbtiles for nautical charting purposes
 
 ==== Requirements ====
 convert from imagemagick
-libpng-dev
+libpng-dev libfreeimage-dev
 mapproxy
 
 ==== Building ====
@@ -39,10 +39,7 @@ $ wget -c https://s31.postimg.org/4p270ov7f/subneg.png
 $ mbtilessub.sh nautical-17.mbtiles nautical-17-sub.mbtiles subneg.png
 
 3) Convert to kap
-$ mkdir kap
-$ cd kap
-
-mbtiles2kaps.py ../nautical-17.mbtiles ../mbtiles-nautical-boxes/boxes/nautical-17 
+mbtiles2kaps.py nautical-17-sub.mbtiles nautical mbtiles-nautical-boxes/boxes/nautical-17
 
 ==== Tools ====
 
