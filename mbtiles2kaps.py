@@ -117,7 +117,7 @@ else:
          num = num + 1
    crop = False
 
-   print "will generate", len(content), "charts"
+   print "will generate", len(content), "charts", "                         "
 
 count = 0
 total = len(content)

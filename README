@@ -40,7 +40,7 @@ You now have mbtiles in tms format.
 You can use the scripts to filter, recolor etc
 This example makes compression much less for nautical charts:
 
-$ wget -c https://s31.postimg.org/4p270ov7f/subneg.png
+$ wget -c https://s32.postimg.org/ea7daiwp1/subneg.png
 $ mbtilessub.sh nautical-17.mbtiles nautical-17-sub.mbtiles subneg.png
 
 3) Convert to kap
