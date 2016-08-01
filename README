@@ -6,6 +6,10 @@ convert from imagemagick
 libpng-dev libfreeimage-dev
 mapproxy
 
+pypng
+mbutil
+landez
+
 ==== Building ====
 $ git clone https://github.com/mapbox/mbutil.git
 $ cd mbutil
@@ -13,6 +17,7 @@ $ sudo python setup.py install
 $ cd ..   
 $ git clone https://github.com/seandepagnier/landez.git
 $ sudo easy_install landez
+$ sudo easy_install pypng
 
 $ make
 $ sudo make install
@@ -48,6 +53,12 @@ mbtiles2kaps.py:
 
 kap2mbtiles.py:
     convert a single kap file to mbtiles database
+
+    If the output mbtiles already exists, the kap will be inserted
+    possibly overwritting existing overlapping chart tiles.
+    For this reason, when converting a set of kaps to a single
+    mbtiles database, they should be inserted in order from the
+    smallest to largest scale
 
 mbtilesflip.sh:
     Simply flips y values in mbtiles, so converts from tms to wmts

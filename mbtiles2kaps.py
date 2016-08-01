@@ -35,8 +35,6 @@ if len(args) != 2 and len(args) != 3:
     print ""
     exit(1)
 
-#sys.path.insert(0, '/home/sean/build/landez')
-
 import subprocess
 import logging
 #logging.basicConfig(level=logging.DEBUG)
@@ -145,7 +143,7 @@ for line in content:
    ll1 = (xmax, ymin)
    px0=proj.project_pixels(ll0, zoomlevel)
    px1=proj.project_pixels(ll1, zoomlevel)
-   print px0, px1, ll0, ll1
+
    mintile = int(px0[0]/proj.tilesize), int(px0[1]/proj.tilesize)
    maxtile = int(ceil(px1[0]/proj.tilesize)), int(ceil(px1[1]/proj.tilesize))
 
