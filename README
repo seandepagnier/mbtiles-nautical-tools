@@ -24,26 +24,17 @@ $ sudo make install
 
 ==== Example ====
 
-Edit mbtiles-nautical-boxes/config.yaml to select a tile server
+If you have mbtiles in tms format.
 
-$ mapproxy-seed -s nautical-17.yaml -f config.yaml
+1) Filter Tiles (Optional)
 
-This program is a little buggy as it sometimes aborts, but
-also tends to "complete" without completing the database.
-Run it as many times as needed until it completes with 0 tiles fetched.
-
-$ cp mbtiles-nautical-boxes/cache_data/mapproxy-seed-output.mbtiles nautical-17.mbtiles
-
-You now have mbtiles in tms format.
-
-2) Filter Tiles (Optional)
 You can use the scripts to filter, recolor etc
 This example makes compression much less for nautical charts:
 
 $ wget -c https://s32.postimg.org/ea7daiwp1/subneg.png
 $ mbtilessub.sh nautical-17.mbtiles nautical-17-sub.mbtiles subneg.png
 
-3) Convert to kap
+2) Convert to kap
 mbtiles2kaps.py nautical-17-sub.mbtiles nautical mbtiles-nautical-boxes/boxes/nautical-17
 
 ==== Tools ====
@@ -60,15 +51,10 @@ kap2mbtiles.py:
     mbtiles database, they should be inserted in order from the
     smallest to largest scale
 
-mbtilesflip.sh:
-    Simply flips y values in mbtiles, so converts from tms to wmts
-    This is useful if the mbfiles is obtained in tms but wmts is needed
-    by mbtiles2kaps.py
-
 mbtilessub.sh:
-    can remove identical features present in every tile of an mbtiles
+    can remove identical features (if present) in every tile of an mbtiles
     This is useful to reduce the size of the resulting mbtiles
-    as it will compress beter without this feature, relies on subpng.c
+    as it will compress better without this feature, relies on subpng.c
     and needs a mask tile (typically inverted white tile containing the feature)
 
 mbtilesrecolor.sh:
@@ -77,6 +63,15 @@ mbtilesrecolor.sh:
 
 mbtilesreduce.sh:
     tiles to 8bit png reducing the size of mbtiles to a given number of colors
+    this can greatly reduce the size of the mbtiles database, but should not
+    be done before converting to kap as the kap conversion will calculate
+    a palette per chart (rather than per tile which is what is here) and
+    if the tiles already have a low-color palette, the resulting kaps will
+    be of lower quality and larger in size
+
+mbtilesflip.sh:
+    Simply flips y values in mbtiles, so converts from tms to wmts
+    This is useful if the mbfiles is obtained in wmts
 
 mbtiles2kap.sh:  (obsolete not recommended)
     script that converts from mbtiles to single kap
