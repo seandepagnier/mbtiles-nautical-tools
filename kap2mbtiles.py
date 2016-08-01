@@ -122,7 +122,7 @@ proj = GoogleProjection(tile_size, range(0, 21))
 px0=proj.project_pixels(ll_min, 20)
 px1=proj.project_pixels(ll_max, 20)
 
-zoom = 20 - int(math.log(float(px1[0] - px0[0]) / kap_width) / math.log(2)) - 1
+zoom = 20 - int(math.log(float(px1[0] - px0[0]) / kap_width) / math.log(2))
 
 if zoom < 1 or zoom > 20:
     print "calculated zoom %d: invalid" % zoom
