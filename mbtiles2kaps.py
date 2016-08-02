@@ -115,9 +115,10 @@ else:
                del tiles[(x, y)]
          
          num = num + 1
+      print "%d charts for zoom %d                              " % (num, zoom)
    crop = False
 
-   print "will generate", len(content), "charts", "                         "
+   print "will generate", len(content), "charts"
 
 count = 0
 total = len(content)
