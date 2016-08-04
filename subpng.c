@@ -176,15 +176,14 @@ void process_file(struct png_file *i, struct png_file *s)
         png_byte* row = i->row_pointers[y];
         png_byte* srow = s->row_pointers[y];
         for (x=0; x<i->width; x++) {
-            png_byte* ptr = &(row[x*4]);
             png_byte* sptr = &(srow[x*4]);
-//            printf("Pixel at position [ %d - %d ] has RGBA values: %d - %d - %d - %d\n",
-//                   x, y, ptr[0], ptr[1], ptr[2], ptr[3]);
+            if(sptr[0] == 0 && sptr[1] == 0 && sptr[2] == 0)
+                continue;
+
+            png_byte* ptr = &(row[x*4]);
 
             for(k=0; k<3; k++)
-//                ptr[k] = ptr[k]+sptr[k]*ptr[k]/255;
-//                ptr[k] = ptr[k]+sptr[k];
-                ptr[k] = ptr[k]+sptr[k]/2+sptr[k]*ptr[k]/510;
+                ptr[k] = ptr[k] + (sptr[k]>>1) + (sptr[k]*ptr[k]>>9);
         }
     }
 }
