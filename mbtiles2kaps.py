@@ -39,6 +39,7 @@ import subprocess
 import logging
 #logging.basicConfig(level=logging.DEBUG)
 
+#sys.path.insert(0, '/home/sean/build/landez')
 from landez import ImageExporter
 from landez import GoogleProjection
 
@@ -145,30 +146,29 @@ for line in content:
    px0=proj.project_pixels(ll0, zoomlevel)
    px1=proj.project_pixels(ll1, zoomlevel)
 
-   mintile = int(px0[0]/proj.tilesize), int(px0[1]/proj.tilesize)
-   maxtile = int(ceil(px1[0]/proj.tilesize)), int(ceil(px1[1]/proj.tilesize))
+   mint = int(px0[0]/proj.tilesize), int(px0[1]/proj.tilesize)
+   maxt = int(ceil(px1[0]/proj.tilesize)), int(ceil(px1[1]/proj.tilesize))
 
    print "export_image", bbox, zoomlevel, imagepath
-   tilecount = (maxtile[0] - mintile[0]) * (maxtile[1] - mintile[1])
-   print "%d tiles from" % tilecount, mintile, "to", maxtile
+   sizet = maxt[0] - mint[0], maxt[1] - mint[1]
+   print sizet[0] * sizet[1], "tiles from", mint, "to", (maxt[0]-1, maxt[1]-1)
    ie.export_image(bbox, zoomlevel, imagepath)
    
-   minpx = mintile[0]*proj.tilesize, mintile[1]*proj.tilesize
-   maxpx = maxtile[0]*proj.tilesize, maxtile[1]*proj.tilesize
+   minpx = mint[0]*proj.tilesize, mint[1]*proj.tilesize
+   maxpx = maxt[0]*proj.tilesize, maxt[1]*proj.tilesize
 
    if crop:
       p0 = px0[0] - minpx[0], px0[1] - minpx[1];
-      p1 = px1[0] - minpx[0], px1[1] - minpx[1];
-      size = p1[0] - p0[0], p1[1] - p0[1];
+      size = px1[0] - px0[0], px1[1] - px0[1];
       cropcommand = ["convert", imagepath, "-crop", "%dx%d+%d+%d" % (size[0], size[1], p0[0], p0[1]), imagepath]
       print ' '.join(cropcommand)
       subprocess.call(cropcommand)
       
-      imgkapcommand = ["imgkap", imagepath, str(ll0[1]), str(ll0[0]), str(ll1[1]), str(ll1[0]), kappath]
+      imgkapcommand = ["imgkap", "-w", "-e", imagepath, str(ll0[1]), str(ll0[0]), str(ll1[1]), str(ll1[0]), kappath]
    else:
       minll = proj.unproject_pixels(minpx, zoomlevel)
       maxll = proj.unproject_pixels(maxpx, zoomlevel)
-      imgkapcommand = ["imgkap", imagepath, str(minll[1]), str(minll[0]), str(maxll[1]), str(maxll[0]), kappath]
+      imgkapcommand = ["imgkap", "-w", "-e", imagepath, str(minll[1]), str(minll[0]), str(maxll[1]), str(maxll[0]), kappath]
       
    usepngquant = 1
    if usepngquant == 1:
@@ -182,4 +182,3 @@ for line in content:
       
    print ' '.join(imgkapcommand)
    subprocess.call(imgkapcommand)
-
