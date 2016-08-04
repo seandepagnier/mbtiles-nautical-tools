@@ -73,7 +73,7 @@ if min(map(len, (wpx, wpy, pwx, pwy))) < 3:
     exit(1)
 
 # expand polynominals to have enough zeros
-map(lambda l: l.extend([0, 0, 0]), (wpx, wpy, pwx, pwy))
+map(lambda l: l.extend([0, 0, 0, 0, 0, 0, 0, 0, 0]), (wpx, wpy, pwx, pwy))
 
 if not projection:
     print "invalid or unsupported projection"
@@ -88,11 +88,13 @@ kap_width, kap_height, png_data, png_info = r.asRGB8()
 print "reading png data (this may take a while)"
 kap_pixels = list(png_data)
 
-def polytrans(coeff, coord):
-    return coeff[0] + coeff[1]*coord[0] + coeff[2]*coord[1] + \
-        coeff[3]*coord[0]*coord[0] + \
-        coeff[4]*coord[0]*coord[1] + \
-        coeff[5]*coord[1]*coord[1]
+def polytrans(c, xy):
+    x, y = xy
+    x2 = x*x
+    y2 = y*y
+
+    return c[0] + c[1]*x + c[2]*y + c[3]*x2 + c[4]*x*y + c[5]*y2 + \
+        c[6]*x*x2 + c[7]*x2*y + c[8]*x*y2 + c[9]*y*y2
     
 def kap_px_to_ll(x, y):
     return polytrans(pwx, (x, y)), polytrans(pwy, (x, y))
@@ -115,7 +117,7 @@ tiles_dir = tempfile.mkdtemp()
 if os.path.exists(sys.argv[2]):
     mbtiles_to_disk(sys.argv[2], tiles_dir)
 
-tile_size = 256 # get tile size from mbtiles metadata
+tile_size = 256
 proj = GoogleProjection(tile_size, range(0, 21))
 
 # compute zoom level
@@ -137,11 +139,14 @@ px1=proj.project_pixels(ll_max, zoom)
 mint = int(px0[0]/proj.tilesize), int(px1[1]/proj.tilesize)
 maxt = int(math.ceil(px1[0]/proj.tilesize)), int(math.ceil(px0[1]/proj.tilesize))
 
-print "tiles", mint, maxt, tiles_dir
+tilecount = (maxt[0] - mint[0]) * (maxt[1] - mint[1])
+print tilecount, "tiles from", mint, "to", (maxt[0]-1, maxt[1]-1)
 
 for yt in range(mint[1], maxt[1]):
+    y = yt-mint[1]
+    yd = maxt[1]-mint[1]
     sys.stdout.write("%.1f%% %d of %d\r" % \
-                     (100.0 * (yt-mint[1]) / (maxt[1]-mint[1]), yt, maxt[1]))
+                     (100.0 * y / yd, y, yd))
     sys.stdout.flush()
 
     for xt in range(mint[0], maxt[0]):
@@ -184,18 +189,23 @@ for yt in range(mint[1], maxt[1]):
                    kap_px0[1] >= 0 and kap_px0[1] < kap_height-1:
                     d = kap_px[0] - kap_px0[0], kap_px[1] - kap_px0[1]
 
-                    v0 = kap_px_at(kap_px0[0],   kap_px0[1])
-                    v1 = kap_px_at(kap_px0[0]+1, kap_px0[1])
-                    v2 = kap_px_at(kap_px0[0],   kap_px0[1]+1)
-                    v3 = kap_px_at(kap_px0[0]+1, kap_px0[1]+1)
+                    interp = True
+                    if interp:
+                        v0 = kap_px_at(kap_px0[0],   kap_px0[1])
+                        v1 = kap_px_at(kap_px0[0]+1, kap_px0[1])
+                        v2 = kap_px_at(kap_px0[0],   kap_px0[1]+1)
+                        v3 = kap_px_at(kap_px0[0]+1, kap_px0[1]+1)
 
-                    def interp(d, v0, v1):
-                        return map(lambda v0, v1: v0*(1-d) + v1*d, v0, v1)
+                        def interp(d, v0, v1):
+                            return map(lambda v0, v1: v0*(1-d) + v1*d, v0, v1)
 
-                    v01 = interp(d[0], v0, v1)
-                    v23 = interp(d[0], v2, v3)
+                        v01 = interp(d[0], v0, v1)
+                        v23 = interp(d[0], v2, v3)
 
-                    v = interp(d[1], v01, v23)
+                        v = interp(d[1], v01, v23)
+                    else:
+                        v = kap_px_at(int(round(kap_px0[0])),
+                                      int(round(kap_px0[1])))
 
                     v = map(lambda x : min(max(int(x), 0), 255), v)
 
