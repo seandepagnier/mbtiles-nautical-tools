@@ -19,7 +19,6 @@ install: all
 	install mbtilesrecolor.sh /usr/local/bin
 	install mbtilesreduce.sh /usr/local/bin
 	install mbtilessub.sh /usr/local/bin
-	install mbtilesflip.sh /usr/local/bin
 
 clean:
 	rm -f subpng

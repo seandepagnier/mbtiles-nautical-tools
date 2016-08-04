@@ -47,7 +47,7 @@ topoutputdir = args[1];
 if not os.path.exists(topoutputdir):
    os.makedirs(topoutputdir)
 
-ie = ImageExporter(mbtiles_file=args[0], cache=False, tile_scheme='tms')
+ie = ImageExporter(mbtiles_file=args[0], cache=False)
 if len(args) == 3:
     f = open(args[2])
     content = f.readlines()
@@ -57,10 +57,7 @@ else:
 
    zoomlevels = ie.reader.zoomlevels()
    content = []
-
    for zoom in range(min(zoomlevels), max(zoomlevels)+1):
-#      c = ie.reader.find_coverage(zoom)
-#      print "coverage", c
       num = 0
       query = ie.reader._query('''SELECT tile_column, tile_row FROM tiles
                             WHERE zoom_level=?
@@ -68,6 +65,8 @@ else:
       tiles = {}
       t = query.fetchone()
       while t:
+         if ie.tile_scheme == 'tms':
+            t = t[0], 2 ** zoom - 1 - t[1]
          tiles[t] = True
          t = query.fetchone()
 
@@ -146,16 +145,16 @@ for line in content:
    px0=proj.project_pixels(ll0, zoomlevel)
    px1=proj.project_pixels(ll1, zoomlevel)
 
-   mint = int(px0[0]/proj.tilesize), int(px0[1]/proj.tilesize)
-   maxt = int(ceil(px1[0]/proj.tilesize)), int(ceil(px1[1]/proj.tilesize))
+   mint = int(px0[0]/ie.tile_size), int(px0[1]/ie.tile_size)
+   maxt = int(ceil(px1[0]/ie.tile_size)), int(ceil(px1[1]/ie.tile_size))
 
    print "export_image", bbox, zoomlevel, imagepath
    sizet = maxt[0] - mint[0], maxt[1] - mint[1]
    print sizet[0] * sizet[1], "tiles from", mint, "to", (maxt[0]-1, maxt[1]-1)
    ie.export_image(bbox, zoomlevel, imagepath)
    
-   minpx = mint[0]*proj.tilesize, mint[1]*proj.tilesize
-   maxpx = maxt[0]*proj.tilesize, maxt[1]*proj.tilesize
+   minpx = mint[0]*ie.tile_size, mint[1]*ie.tile_size
+   maxpx = maxt[0]*ie.tile_size, maxt[1]*ie.tile_size
 
    if crop:
       p0 = px0[0] - minpx[0], px0[1] - minpx[1];

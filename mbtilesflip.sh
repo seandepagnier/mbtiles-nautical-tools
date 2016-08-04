@@ -5,7 +5,12 @@
 ## License:     GPLv3+
 ##---------------------------------------------------------------------------
 
-# flip coordinates for tms <-> wmts
+# flip coordinates for tms <-> zxy
+#
+# this function is deprecated because the reader
+# detects scheme and adjusts anyway
+#
+# Warning: Does not update metadata!
 
 if [ $# -ne 2 ] ; then
     echo "Usage: mbtilesflip.sh in.mbtiles out.mbtiles" >&2
