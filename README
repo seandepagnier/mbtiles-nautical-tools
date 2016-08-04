@@ -11,12 +11,17 @@ mbutil
 landez
 
 ==== Building ====
+$ git clone https://github.com/seandepagnier/imgkap.git
+$ sudo make -C imgkap install
+
 $ git clone https://github.com/mapbox/mbutil.git
 $ cd mbutil
 $ sudo python setup.py install
-$ cd ..   
+$ cd ..
+
 $ git clone https://github.com/seandepagnier/landez.git
 $ sudo easy_install landez
+
 $ sudo easy_install pypng
 
 $ make
