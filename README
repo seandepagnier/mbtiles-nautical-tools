@@ -24,6 +24,8 @@ $ sudo easy_install landez
 
 $ sudo easy_install pypng
 
+$ pip install cffi
+
 $ make
 $ sudo make install
 

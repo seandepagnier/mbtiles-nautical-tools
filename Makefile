@@ -4,7 +4,10 @@
 ## License:     GPLv3+
 ##---------------------------------------------------------------------------
 
-all: subpng mbtiles-nautical-boxes
+all: subpng mbtiles-nautical-boxes kap2mbtilesffi.so
+
+kap2mbtilesffi.so: kap2mbtiles-helper.c pngsimple.c kap2mbtiles-builder.py
+	python kap2mbtiles-builder.py 
 
 mbtiles-nautical-boxes:
 	git clone https://github.com/seandepagnier/mbtiles-nautical-boxes
