@@ -13,7 +13,10 @@ import base64
 import os
 import sys
 import subprocess
-
+import Image
+import tempfile
+from StringIO import StringIO
+    
 if len(sys.argv) != 3:
     print "Usage: " + sys.argv[0] + " input.har output.mbtiles"
     exit(1)
@@ -21,9 +24,7 @@ if len(sys.argv) != 3:
 with open(sys.argv[1]) as data_file:
     data = json.load(data_file)
 
-output = 'output'
-if not os.path.exists(output):
-    os.makedirs(output)
+output = tempfile.mkdtemp()
 
 def numeric(c):
     return c == '0' or c == '1' or c == '2' or c == '3' or c == '4' or \
@@ -94,9 +95,14 @@ for entry in data['log']['entries']:
     if encoding == 'base64':
         decode = base64.b64decode(text)
 
+        try:
+            img = Image.open(StringIO(decode)).convert('RGBA')
+        except:
+            continue
+
         numy = 2 ** numz - 1 - numy
 
-        path = 'output/%d/%d' % (numz, numx)
+        path = output+'/%d/%d' % (numz, numx)
         filename = path+'/%d.png' % numy
         print filename
         if not os.path.exists(path):
@@ -105,12 +111,12 @@ for entry in data['log']['entries']:
         f.write(decode)
         f.close()
 
-mbutil = ["mb-util", 'output', sys.argv[2]]
+mbutil = ["mb-util", output, sys.argv[2]]
 print ' '.join(mbutil)
 if subprocess.call(mbutil) != 0:
     print "mbutil failed"
 
 # cleanup
 import shutil
-shutil.rmtree('output', ignore_errors=True)
+shutil.rmtree(output, ignore_errors=True)
 print ""

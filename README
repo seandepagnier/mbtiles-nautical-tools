@@ -31,7 +31,13 @@ $ sudo make install
 
 ==== Example ====
 
-If you have mbtiles in tms format.
+First browse to a tms server in firefox, with ctrl+shift+c enter debugger and select
+networking tab.   Now browse the areas in the map to store.  Right click
+the debugger and save all as HAR.
+
+Now run the script har2mbtiles to create an mbtiles in xyz format
+
+If you have mbtiles in xyz format.
 
 1) Filter Tiles (Optional)
 
