@@ -58,15 +58,15 @@ kap2mbtiles.py:
     mbtiles database, they should be inserted in order from the
     smallest to largest scale
 
+mbtilesrecolor.sh:
+    Apply a color matrix to every tile in mbtiles
+    This can apply "color schemes" such as day/dusk/night to charts
+
 mbtilessub.sh:
     can remove identical features (if present) in every tile of an mbtiles
     This is useful to reduce the size of the resulting mbtiles
     as it will compress better without this feature, relies on subpng.c
     and needs a mask tile (typically inverted white tile containing the feature)
-
-mbtilesrecolor.sh:
-    Apply a color matrix to every tile in mbtiles
-    This can apply "color schemes" such as day/dusk/night to charts
 
 mbtilesreduce.sh:
     tiles to 8bit png reducing the size of mbtiles to a given number of colors
@@ -75,6 +75,9 @@ mbtilesreduce.sh:
     a palette per chart (rather than per tile which is what is here) and
     if the tiles already have a low-color palette, the resulting kaps will
     be of lower quality and larger in size
+
+har2mbtiles.py:
+    Convert http archive into mbtiles database
 
 mbtilesflip.sh:
     Simply flips y values in mbtiles, so converts from tms to wmts
