@@ -39,7 +39,7 @@ import subprocess
 import logging
 #logging.basicConfig(level=logging.DEBUG)
 
-#sys.path.insert(0, '/home/sean/build/landez')
+sys.path.insert(0, '/home/sean/build/landez')
 from landez import ImageExporter
 from landez import GoogleProjection
 
@@ -136,9 +136,6 @@ for line in content:
    imagepath=outputdir+"/"+l[0]+".png"
    kappath=outputdir+"/"+l[0]+".kap"
 
-   print "%.1f%%" % (100.0 * count / total), " converting ", bbox, zoomlevel
-   count = count + 1
-
    proj = GoogleProjection(ie.tile_size, [zoomlevel])
    xmin, ymin, xmax, ymax = bbox
    ll0 = (xmin, ymax)
@@ -149,9 +146,10 @@ for line in content:
    mint = int(px0[0]/ie.tile_size), int(px0[1]/ie.tile_size)
    maxt = int(ceil(px1[0]/ie.tile_size)), int(ceil(px1[1]/ie.tile_size))
 
-   print "export_image", bbox, zoomlevel, imagepath
    sizet = maxt[0] - mint[0], maxt[1] - mint[1]
-   print sizet[0] * sizet[1], "tiles from", mint, "to", (maxt[0]-1, maxt[1]-1)
+   print "%.1f%%" % (100.0 * count / total), " converting ", bbox, zoomlevel, sizet[0] * sizet[1], "tiles"
+   count = count + 1
+
    ie.export_image(bbox, zoomlevel, imagepath)
    
    minpx = mint[0]*ie.tile_size, mint[1]*ie.tile_size
